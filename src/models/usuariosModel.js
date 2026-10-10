@@ -25,7 +25,9 @@ function login (email, senha){
 return logarUsuario
 }
 
+function buscarPorCPF(cpf) {
+    return listaUsuarios.find(usuario => usuario.cpf === cpf);
+}
 
 
-
-module.exports = {cadastrarUsuario, login}
+module.exports = {cadastrarUsuario, login, buscarPorCPF}
