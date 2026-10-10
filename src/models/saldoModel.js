@@ -1,7 +1,7 @@
 const visitasModel = require("./locaisVisitasModel")
 const resgatesModel = require("./resgatesModel")
 
-// Saldo = pontos ganhos nas visitas - pontos gastos nos resgates.
+
 function calcularSaldo(usuarioId) {
   const pontosGanhos = visitasModel.listarVisitas()
     .filter(v => v.id === usuarioId)
