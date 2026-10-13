@@ -18,9 +18,18 @@ produto: {
     estoque: {obrigatorio: true, tipo: "number", inteiro: true, minValor: 0}
 },
 
+sala: {
+    sala: {obrigatorio: true, tipo: "string", min: 3, max: 40},
+    descricao: {tipo: "string", max: 120},
+    icone: {tipo: "string", max: 20},
+    pontos: {obrigatorio: true, tipo: "number", inteiro: true, minValor: 1},
+    ativa: {tipo: "boolean"}
+},
+
+
 resgate: {
     produtoId: {obrigatorio: true, tipo: "number", inteiro: true, minValor: 1}
 }
 }
 
-module.exports = schema
+module.exports = schema

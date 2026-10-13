@@ -9,11 +9,11 @@ function registrarVisitas(req, res) {
     return res.status(400).json({ erro: "Dados incompletos para registrar a visita." })
   }
 
-  // Nome e pontos vêm do cadastro de salas, não do cliente.
+  
   const salaCadastrada = salasModel.buscarSalaPorId(Number(salaId))
 
-  if (!salaCadastrada) {
-    return res.status(404).json({ erro: "Sala não encontrada." })
+   if (!salaCadastrada || !salaCadastrada.ativa) {
+    return res.status(404).json({ erro: "Sala não encontrada ou desativada." })
   }
 
   const localDeVisita = visitasModel.salvarVisita(nome, id, salaCadastrada.salaId, salaCadastrada.sala, salaCadastrada.pontos)
@@ -53,4 +53,4 @@ return res.json(todasVisitas)
 }
 
 
-module.exports = { registrarVisitas, listarVisitas }
+module.exports = { registrarVisitas, listarVisitas }
