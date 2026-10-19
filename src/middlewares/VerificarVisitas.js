@@ -1,16 +1,23 @@
 const visitasModel = require("../models/locaisVisitasModel")
 
-function verificarVisita(req, res, next){
-    const verificador = visitasModel.listarVisitas()
-const {nome, id} = req.usuario
-const {salaId, sala, pontos} = req.body
+async function verificarVisita(req, res, next) {
 
-const registrado = verificador.find(v => v.id === id && v.salaId === Number(salaId))
-if(registrado){
-    return res.status(409).json({erro: "O local já foi visitado!"})
+    const visitas = await visitasModel.listarVisitas()
+
+    const { id } = req.usuario
+    const { salaId } = req.body
+
+    const registrado = visitas.find(
+        v => v.id === id && v.salaId === Number(salaId)
+    )
+
+    if (registrado) {
+        return res.status(409).json({
+            erro: "O local já foi visitado!"
+        })
+    }
+
+    next()
 }
 
-next()
-
-}
 module.exports = verificarVisita
