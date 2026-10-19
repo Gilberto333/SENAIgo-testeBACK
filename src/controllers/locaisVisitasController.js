@@ -20,6 +20,11 @@ async function registrarVisitas(req, res) {
             })
         }
 
+        // 👇 ADICIONE ESTES LOGS
+        console.log("req.usuario:", req.usuario)
+        console.log("req.body:", req.body)
+        console.log("salaCadastrada:", salaCadastrada)
+
         const localDeVisita = await visitasModel.salvarVisita(
             nome,
             id,
@@ -35,6 +40,8 @@ async function registrarVisitas(req, res) {
 
     } catch (erro) {
 
+        console.error("ERRO:", erro)
+
         if (erro.code === "23505") {
             return res.status(409).json({
                 erro: "Você já registrou visita nesta sala."
@@ -42,7 +49,7 @@ async function registrarVisitas(req, res) {
         }
 
         return res.status(500).json({
-            erro: "Erro ao registrar visita."
+            erro: erro.message
         })
     }
 }
@@ -50,7 +57,6 @@ async function registrarVisitas(req, res) {
 async function listarVisitas(req, res) {
     try {
         const todasVisitas = await visitasModel.listarVisitas()
-
         return res.json(todasVisitas)
     } catch (erro) {
         return res.status(500).json({
