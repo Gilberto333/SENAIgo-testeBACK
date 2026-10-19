@@ -1,33 +1,59 @@
-const listaUsuarios = []
-let id = 1
+const db = require("../database/db")
 
-function cadastrarUsuario(dadosUsuario){
-const usuario = {
-    id: id ++,
-cpf: dadosUsuario.cpf,
-nome: dadosUsuario.nome,
-email: dadosUsuario.email,
-senha: dadosUsuario.senha
+async function cadastrarUsuario(dadosUsuario) {
+    const sql = `
+        INSERT INTO usuarios (cpf, nome, email, senha)
+        VALUES ($1, $2, $3, $4)
+        RETURNING id, cpf, nome, email;
+    `
+
+    const valores = [
+        dadosUsuario.cpf,
+        dadosUsuario.nome,
+        dadosUsuario.email,
+        dadosUsuario.senha
+    ]
+
+    const resultado = await db.query(sql, valores)
+
+    return resultado.rows[0]
 }
-listaUsuarios.push(usuario)
 
-return usuario
+async function login(email, senha) {
+    const sql = `
+        SELECT *
+        FROM usuarios
+        WHERE email = $1
+        AND senha = $2;
+    `
 
-}
+    const resultado = await db.query(sql, [email, senha])
 
-function login (email, senha){
-    const logarUsuario = listaUsuarios.find(u => u.email === email &&  u.senha === senha)
-    
-    if(!logarUsuario){
+    if (resultado.rows.length === 0) {
         return null
     }
 
-return logarUsuario
+    return resultado.rows[0]
 }
 
-function buscarPorCPF(cpf) {
-    return listaUsuarios.find(usuario => usuario.cpf === cpf);
+async function buscarPorCPF(cpf) {
+    const sql = `
+        SELECT *
+        FROM usuarios
+        WHERE cpf = $1;
+    `
+
+    const resultado = await db.query(sql, [cpf])
+
+    if (resultado.rows.length === 0) {
+        return null
+    }
+
+    return resultado.rows[0]
 }
 
-
-module.exports = {cadastrarUsuario, login, buscarPorCPF}
+module.exports = {
+    cadastrarUsuario,
+    login,
+    buscarPorCPF
+}

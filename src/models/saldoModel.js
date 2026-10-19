@@ -1,16 +1,37 @@
-const visitasModel = require("./locaisVisitasModel")
-const resgatesModel = require("./resgatesModel")
+const db = require("../database/db")
 
+async function calcularSaldo(usuarioId) {
 
-function calcularSaldo(usuarioId) {
-  const pontosGanhos = visitasModel.listarVisitas()
-    .filter(v => v.id === usuarioId)
-    .reduce((total, v) => total + (Number(v.pontuacao) || 0), 0)
+    const ganhos = await db.query(
+        `
+        SELECT
+            COALESCE(SUM(pontuacao),0) AS total
+        FROM visitas
+        WHERE usuario_id = $1
+        `,
+        [usuarioId]
+    )
 
-  const pontosGastos = resgatesModel.listarResgatesDoUsuario(usuarioId)
-    .reduce((total, r) => total + r.pontos, 0)
+    const gastos = await db.query(
+        `
+        SELECT
+            COALESCE(SUM(pontos),0) AS total
+        FROM resgates
+        WHERE usuario_id = $1
+        `,
+        [usuarioId]
+    )
 
-  return { pontosGanhos, pontosGastos, saldo: pontosGanhos - pontosGastos }
+    const pontosGanhos = Number(ganhos.rows[0].total)
+    const pontosGastos = Number(gastos.rows[0].total)
+
+    return {
+        pontosGanhos,
+        pontosGastos,
+        saldo: pontosGanhos - pontosGastos
+    }
 }
 
-module.exports = { calcularSaldo }
+module.exports = {
+    calcularSaldo
+}

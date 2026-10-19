@@ -1,26 +1,48 @@
-const historicoResgates = []
-let id = 1
+const db = require("../database/db")
 
-// Guarda uma cópia do nome e do custo do produto: o histórico não muda se o produto for editado ou removido.
-function salvarResgate(usuarioId, usuarioNome, produto) {
-  const resgate = {
-    id: id++,
-    usuarioId: usuarioId,
-    usuarioNome: usuarioNome,
-    produtoId: produto.id,
-    produtoNome: produto.nome,
-    produtoImagem: produto.imagem,
-    pontos: produto.pontos,
-    criadoEm: new Date()
-  }
+async function salvarResgate(usuarioId, usuarioNome, produto) {
+    const resultado = await db.query(
+        `
+        INSERT INTO resgates
+        (
+            usuario_id,
+            usuario_nome,
+            produto_id,
+            produto_nome,
+            produto_imagem,
+            pontos
+        )
+        VALUES ($1,$2,$3,$4,$5,$6)
+        RETURNING *
+        `,
+        [
+            usuarioId,
+            usuarioNome,
+            produto.id,
+            produto.nome,
+            produto.imagem,
+            produto.pontos
+        ]
+    )
 
-  historicoResgates.push(resgate)
-
-  return resgate
+    return resultado.rows[0]
 }
 
-function listarResgatesDoUsuario(usuarioId) {
-  return historicoResgates.filter(r => r.usuarioId === usuarioId)
+async function listarResgatesDoUsuario(usuarioId) {
+    const resultado = await db.query(
+        `
+        SELECT *
+        FROM resgates
+        WHERE usuario_id = $1
+        ORDER BY criado_em DESC
+        `,
+        [usuarioId]
+    )
+
+    return resultado.rows
 }
 
-module.exports = { salvarResgate, listarResgatesDoUsuario }
+module.exports = {
+    salvarResgate,
+    listarResgatesDoUsuario
+}
