@@ -1,18 +1,18 @@
 const db = require("../database/db")
 
 async function salvarVisita(usuario, id, salaId, sala, pontos) {
+
     const resultado = await db.query(
         `
         INSERT INTO visitas (usuario_id, sala_id, pontuacao)
         VALUES ($1, $2, $3)
-        RETURNING *
+        RETURNING criado_em
         `,
         [id, salaId, pontos]
     )
 
     return {
-        id: resultado.rows[0].id,
-        usuarioId: id,
+        id,
         nome: usuario,
         salaId,
         sala,
@@ -22,15 +22,15 @@ async function salvarVisita(usuario, id, salaId, sala, pontos) {
 }
 
 async function listarVisitas() {
+
     const resultado = await db.query(`
         SELECT
-            v.id,
-            v.usuario_id,
+            v.usuario_id AS id,
             u.nome,
-            v.sala_id,
+            v.sala_id AS "salaId",
             s.sala,
             v.pontuacao,
-            v.criado_em
+            v.criado_em AS "criadoEm"
         FROM visitas v
         JOIN usuarios u
             ON u.id = v.usuario_id

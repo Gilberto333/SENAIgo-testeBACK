@@ -2,7 +2,13 @@ const db = require("../database/db")
 
 async function listarSalas() {
     const resultado = await db.query(`
-        SELECT *
+        SELECT
+            sala_id AS "salaId",
+            sala,
+            pontos,
+            icone,
+            descricao,
+            ativa
         FROM salas
         WHERE ativa = true
         ORDER BY sala_id
@@ -13,7 +19,13 @@ async function listarSalas() {
 
 async function listarTodasSalas() {
     const resultado = await db.query(`
-        SELECT *
+        SELECT
+            sala_id AS "salaId",
+            sala,
+            pontos,
+            icone,
+            descricao,
+            ativa
         FROM salas
         ORDER BY sala_id
     `)
@@ -23,7 +35,17 @@ async function listarTodasSalas() {
 
 async function buscarSalaPorId(salaId) {
     const resultado = await db.query(
-        `SELECT * FROM salas WHERE sala_id = $1`,
+        `
+        SELECT
+            sala_id AS "salaId",
+            sala,
+            pontos,
+            icone,
+            descricao,
+            ativa
+        FROM salas
+        WHERE sala_id = $1
+        `,
         [salaId]
     )
 
@@ -35,7 +57,13 @@ async function cadastrarSala(dadosSala) {
         `
         INSERT INTO salas (sala, pontos, icone, descricao)
         VALUES ($1, $2, $3, $4)
-        RETURNING *
+        RETURNING
+            sala_id AS "salaId",
+            sala,
+            pontos,
+            icone,
+            descricao,
+            ativa
         `,
         [
             dadosSala.sala,
@@ -59,7 +87,13 @@ async function atualizarSala(salaId, dadosSala) {
             descricao = $4,
             ativa = $5
         WHERE sala_id = $6
-        RETURNING *
+        RETURNING
+            sala_id AS "salaId",
+            sala,
+            pontos,
+            icone,
+            descricao,
+            ativa
         `,
         [
             dadosSala.sala,
@@ -79,7 +113,13 @@ async function removerSala(salaId) {
         `
         DELETE FROM salas
         WHERE sala_id = $1
-        RETURNING *
+        RETURNING
+            sala_id AS "salaId",
+            sala,
+            pontos,
+            icone,
+            descricao,
+            ativa
         `,
         [salaId]
     )

@@ -23,7 +23,7 @@ async function registrarVisitas(req, res) {
         const localDeVisita = await visitasModel.salvarVisita(
             nome,
             id,
-            salaCadastrada.sala_id,
+            salaCadastrada.salaId,
             salaCadastrada.sala,
             salaCadastrada.pontos
         )
@@ -48,15 +48,15 @@ async function registrarVisitas(req, res) {
 }
 
 async function listarVisitas(req, res) {
-    const todasVisitas = await visitasModel.listarVisitas()
+    try {
+        const todasVisitas = await visitasModel.listarVisitas()
 
-    if (todasVisitas.length === 0) {
-        return res.json({
-            erro: "Nenhuma visita encontrada."
+        return res.json(todasVisitas)
+    } catch (erro) {
+        return res.status(500).json({
+            erro: "Erro ao listar visitas."
         })
     }
-
-    return res.json(todasVisitas)
 }
 
 module.exports = {

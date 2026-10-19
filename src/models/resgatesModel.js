@@ -12,8 +12,16 @@ async function salvarResgate(usuarioId, usuarioNome, produto) {
             produto_imagem,
             pontos
         )
-        VALUES ($1,$2,$3,$4,$5,$6)
-        RETURNING *
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING
+            id,
+            usuario_id AS "usuarioId",
+            usuario_nome AS "usuarioNome",
+            produto_id AS "produtoId",
+            produto_nome AS "produtoNome",
+            produto_imagem AS "produtoImagem",
+            pontos,
+            criado_em AS "criadoEm"
         `,
         [
             usuarioId,
@@ -31,7 +39,15 @@ async function salvarResgate(usuarioId, usuarioNome, produto) {
 async function listarResgatesDoUsuario(usuarioId) {
     const resultado = await db.query(
         `
-        SELECT *
+        SELECT
+            id,
+            usuario_id AS "usuarioId",
+            usuario_nome AS "usuarioNome",
+            produto_id AS "produtoId",
+            produto_nome AS "produtoNome",
+            produto_imagem AS "produtoImagem",
+            pontos,
+            criado_em AS "criadoEm"
         FROM resgates
         WHERE usuario_id = $1
         ORDER BY criado_em DESC

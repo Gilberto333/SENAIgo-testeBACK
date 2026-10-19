@@ -2,7 +2,12 @@ const db = require("../database/db")
 
 async function listarProdutos() {
     const resultado = await db.query(`
-        SELECT *
+        SELECT
+            id,
+            nome,
+            imagem,
+            pontos,
+            estoque
         FROM produtos
         ORDER BY id
     `)
@@ -12,7 +17,16 @@ async function listarProdutos() {
 
 async function buscarProdutoPorId(produtoId) {
     const resultado = await db.query(
-        `SELECT * FROM produtos WHERE id = $1`,
+        `
+        SELECT
+            id,
+            nome,
+            imagem,
+            pontos,
+            estoque
+        FROM produtos
+        WHERE id = $1
+        `,
         [produtoId]
     )
 
@@ -24,7 +38,12 @@ async function cadastrarProduto(dadosProduto) {
         `
         INSERT INTO produtos (nome, imagem, pontos, estoque)
         VALUES ($1, $2, $3, $4)
-        RETURNING *
+        RETURNING
+            id,
+            nome,
+            imagem,
+            pontos,
+            estoque
         `,
         [
             dadosProduto.nome,
@@ -47,7 +66,12 @@ async function atualizarProduto(produtoId, dadosProduto) {
             pontos = $3,
             estoque = $4
         WHERE id = $5
-        RETURNING *
+        RETURNING
+            id,
+            nome,
+            imagem,
+            pontos,
+            estoque
         `,
         [
             dadosProduto.nome,
@@ -66,7 +90,12 @@ async function removerProduto(produtoId) {
         `
         DELETE FROM produtos
         WHERE id = $1
-        RETURNING *
+        RETURNING
+            id,
+            nome,
+            imagem,
+            pontos,
+            estoque
         `,
         [produtoId]
     )
@@ -81,7 +110,12 @@ async function baixarEstoque(produtoId) {
         SET estoque = estoque - 1
         WHERE id = $1
         AND estoque > 0
-        RETURNING *
+        RETURNING
+            id,
+            nome,
+            imagem,
+            pontos,
+            estoque
         `,
         [produtoId]
     )
