@@ -42,7 +42,24 @@ async function listarVisitas() {
     return resultado.rows
 }
 
+
+async function verificarVisita(usuarioId, salaId) {
+
+    const resultado = await db.query(
+        `
+        SELECT 1
+        FROM visitas
+        WHERE usuario_id = $1
+        AND sala_id = $2
+        LIMIT 1
+        `,
+        [usuarioId, salaId]
+    )
+
+    return resultado.rows.length > 0
+}
 module.exports = {
     salvarVisita,
-    listarVisitas
+    listarVisitas,
+    verificarVisita
 }
