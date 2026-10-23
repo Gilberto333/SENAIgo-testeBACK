@@ -58,7 +58,34 @@ async function listarResgatesDoUsuario(usuarioId) {
     return resultado.rows
 }
 
+async function buscarResgatesPorCpf(cpf) {
+    const cpfLimpo = cpf.replace(/\D/g, "")
+
+    const resultado = await db.query(
+        `
+        SELECT
+            u.id AS "usuarioId",
+            u.nome AS "usuarioNome",
+            u.cpf AS "usuarioCpf",
+            r.id AS "resgateId",
+            r.produto_id AS "produtoId",
+            r.produto_nome AS "produtoNome",
+            r.produto_imagem AS "produtoImagem",
+            r.pontos,
+            r.criado_em AS "criadoEm"
+        FROM usuarios u
+        LEFT JOIN resgates r ON u.id = r.usuario_id
+        WHERE REGEXP_REPLACE(u.cpf, '[^0-9]', '', 'g') = $1
+        ORDER BY r.criado_em DESC
+        `,
+        [cpfLimpo]
+    )
+
+    return resultado.rows
+}
+
 module.exports = {
     salvarResgate,
-    listarResgatesDoUsuario
+    listarResgatesDoUsuario,
+    buscarResgatesPorCpf
 }

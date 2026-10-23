@@ -1,10 +1,7 @@
 const salasModel = require("../models/salasModel")
 const visitasModel = require("../models/locaisVisitasModel")
 
-async function listarSalas(req, res) {
-  const salas = await salasModel.listarSalas()
-  return res.json(salas)
-}
+
 
 async function listarTodasSalas(req, res) {
   const salas = await salasModel.listarTodasSalas()
